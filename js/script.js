@@ -97,25 +97,41 @@ window.addEventListener("DOMContentLoaded", function () {
   const closeModalTriger = document.querySelector("[data-modal-close]");
   const modal = document.querySelector(".modal");
 
+  const modalTimerId = setTimeout(openModal, 500000);
+
+  function closeModal() {
+    modal.classList.add("hidden");
+    modal.classList.remove("show");
+    document.body.style.overflowY = "auto";
+    clearTimeout(modalTimerId);
+  }
+
+  function openModal() {
+    modal.classList.remove("hidden");
+    modal.classList.add("show");
+    document.body.style.overflowY = "hidden";
+    clearTimeout(modalTimerId);
+  }
+
+  function showModelByScroll() {
+    if (
+      window.scrollY + document.documentElement.clientHeight >=
+      document.documentElement.scrollHeight - 1
+    ) {
+      openModal();
+      window.removeEventListener("scroll", showModelByScroll);
+    }
+  }
+
   if (!modal.matches(".hidden") && !modal.matches(".show")) {
     modal.classList.add("hidden");
   }
 
   openModalTriggers.forEach((trigger) => {
     trigger.addEventListener("click", () => {
-      if (modal.classList.contains("hidden")) {
-        modal.classList.remove("hidden");
-        modal.classList.add("show");
-        document.body.style.overflowY = "hidden";
-      }
+      if (modal.classList.contains("hidden")) openModal();
     });
   });
-
-  function closeModal() {
-    modal.classList.add("hidden");
-    modal.classList.remove("show");
-    document.body.style.overflowY = "auto";
-  }
 
   closeModalTriger.addEventListener("click", () => {
     if (modal.classList.contains("show")) closeModal();
@@ -125,9 +141,11 @@ window.addEventListener("DOMContentLoaded", function () {
     if (e.target && e.target === modal) closeModal();
   });
 
-  this.document.addEventListener("keydown", (e) => {
+  document.addEventListener("keydown", (e) => {
     if (e.key === "Escape" && modal.matches(".show")) closeModal();
   });
+
+  window.addEventListener("scroll", showModelByScroll);
 
   //Modal end
 });
