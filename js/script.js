@@ -90,8 +90,44 @@ window.addEventListener("DOMContentLoaded", function () {
   }
 
   setClock(".timer", endTime);
-
   // timer end
-});
 
-//
+  //Modal start
+  const openModalTriggers = document.querySelectorAll("[data-modal-open]");
+  const closeModalTriger = document.querySelector("[data-modal-close]");
+  const modal = document.querySelector(".modal");
+
+  if (!modal.matches(".hidden") && !modal.matches(".show")) {
+    modal.classList.add("hidden");
+  }
+
+  openModalTriggers.forEach((trigger) => {
+    trigger.addEventListener("click", () => {
+      if (modal.classList.contains("hidden")) {
+        modal.classList.remove("hidden");
+        modal.classList.add("show");
+        document.body.style.overflowY = "hidden";
+      }
+    });
+  });
+
+  function closeModal() {
+    modal.classList.add("hidden");
+    modal.classList.remove("show");
+    document.body.style.overflowY = "auto";
+  }
+
+  closeModalTriger.addEventListener("click", () => {
+    if (modal.classList.contains("show")) closeModal();
+  });
+
+  modal.addEventListener("click", (e) => {
+    if (e.target && e.target === modal) closeModal();
+  });
+
+  this.document.addEventListener("keydown", (e) => {
+    if (e.key === "Escape" && modal.matches(".show")) closeModal();
+  });
+
+  //Modal end
+});
