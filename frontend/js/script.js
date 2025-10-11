@@ -94,7 +94,6 @@ window.addEventListener("DOMContentLoaded", function () {
 
   //Modal start
   const openModalTriggers = document.querySelectorAll("[data-modal-open]");
-  const closeModalTriger = document.querySelector("[data-modal-close]");
   const modal = document.querySelector(".modal");
 
   const modalTimerId = setTimeout(openModal, 500000);
@@ -133,12 +132,12 @@ window.addEventListener("DOMContentLoaded", function () {
     });
   });
 
-  closeModalTriger.addEventListener("click", () => {
-    if (modal.classList.contains("show")) closeModal();
-  });
-
   modal.addEventListener("click", (e) => {
-    if (e.target && e.target === modal) closeModal();
+    if (
+      (e.target && e.target === modal) ||
+      e.target.matches("[data-modal-close]")
+    )
+      closeModal();
   });
 
   document.addEventListener("keydown", (e) => {
@@ -223,4 +222,69 @@ window.addEventListener("DOMContentLoaded", function () {
   ).render();
 
   // MenuCard end
+
+  // forms start
+  const forms = document.querySelectorAll("form");
+  forms.forEach((form) => postData(form));
+
+  const MESSAGE = {
+    loading: "Загрузка...",
+    success: "Спасибо! Скоро мы с вами свяжемся",
+    failure: "Что-то пошло не так... Поопробуете снова!",
+  };
+
+  function postData(form) {
+    form.addEventListener("submit", (e) => {
+      e.preventDefault();
+
+      const loading = document.createElement("p");
+      loading.textContent = MESSAGE.loading;
+      form.insertAdjacentElement("beforeend", loading);
+
+      const formaData = new FormData(e.target);
+
+      const request = new XMLHttpRequest();
+      request.open("POST", "http://localhost:4200/support/");
+      request.setRequestHeader("Content-type", "application/json");
+
+      request.send(JSON.stringify(Object.fromEntries(formaData)));
+      e.target.reset();
+
+      request.addEventListener("load", (e) => {
+        if (request.status === 200) {
+          console.log(request.response);
+          showResponseModal(MESSAGE.success, loading);
+        } else {
+          showResponseModal(MESSAGE.failure, loading);
+        }
+      });
+    });
+  }
+
+  function showResponseModal(message, loading) {
+    loading.remove();
+    const prevModalDialog = document.querySelector(".modal__dialog");
+    prevModalDialog.classList.add("hide");
+    openModal();
+
+    const responeModal = document.createElement("div");
+    responeModal.classList.add("modal__dialog");
+    responeModal.innerHTML = `
+      <div class="modal__content">
+        <div data-modal-close class="modal__close">&times;</div>
+        <div class="modal__title">${message}</div>
+      </div>
+    `;
+
+    modal.append(responeModal);
+    const srmID = setTimeout(() => {
+      responeModal.remove();
+      prevModalDialog.classList.remove("hide");
+      prevModalDialog.classList.add("show");
+      closeModal();
+      clearTimeout(srmID);
+    }, 2500);
+  }
+
+  //forms end
 });
