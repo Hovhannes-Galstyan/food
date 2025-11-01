@@ -237,32 +237,53 @@ window.addEventListener("DOMContentLoaded", function () {
     form.addEventListener("submit", (e) => {
       e.preventDefault();
 
-      const loading = document.createElement("p");
-      loading.textContent = MESSAGE.loading;
+      const loading = document.createElement("div");
+      loading.style.cssText = `
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-top: 16px;
+      `;
+      loading.innerHTML = `<img src="icons/spinner.svg"/> <span>${MESSAGE.loading}</span>`;
       form.insertAdjacentElement("beforeend", loading);
 
-      const formaData = new FormData(e.target);
+      fetch("http://localhost:4200/support/", {
+        method: "POST",
+        headers: { "Content-type": "application/json" },
+        body: JSON.stringify(Object.fromEntries(new FormData(e.target))),
+      })
+        .then((response) => {
+          console.log(response);
+          if (response.ok) {
+            showResponseModal(MESSAGE.success);
+          } else {
+            showResponseModal(MESSAGE.failure);
+          }
+        })
+        .catch((e) => console.log(e))
+        .finally(() => {
+          loading.remove();
+          e.target.reset();
+        });
 
-      const request = new XMLHttpRequest();
-      request.open("POST", "http://localhost:4200/support/");
-      request.setRequestHeader("Content-type", "application/json");
+      // const request = new XMLHttpRequest();
+      // request.open("POST", "http://localhost:4200/support/");
+      // request.setRequestHeader("Content-type", "application/json");
 
-      request.send(JSON.stringify(Object.fromEntries(formaData)));
-      e.target.reset();
+      // request.send(JSON.stringify(Object.fromEntries(formaData)));
 
-      request.addEventListener("load", (e) => {
-        if (request.status === 200) {
-          console.log(request.response);
-          showResponseModal(MESSAGE.success, loading);
-        } else {
-          showResponseModal(MESSAGE.failure, loading);
-        }
-      });
+      // request.addEventListener("load", (e) => {
+      //   if (request.status === 200) {
+      //     console.log(request.response);
+      //     showResponseModal(MESSAGE.success, loading);
+      //   } else {
+      //     showResponseModal(MESSAGE.failure, loading);
+      //   }
+      // });
     });
   }
 
-  function showResponseModal(message, loading) {
-    loading.remove();
+  function showResponseModal(message) {
     const prevModalDialog = document.querySelector(".modal__dialog");
     prevModalDialog.classList.add("hide");
     openModal();
@@ -285,6 +306,5 @@ window.addEventListener("DOMContentLoaded", function () {
       clearTimeout(srmID);
     }, 2500);
   }
-
   //forms end
 });
