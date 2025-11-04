@@ -616,9 +616,39 @@ a {
 }
 @keyframes fade {
   from {
-    filter: grayscale(100);
+    opacity: 0.5;
   }
   to {
-    filter: grayscale(0);
+    opacity: 1;
+  }
+}
+.dots__wrapper {
+  position: absolute;
+  right: 0;
+  bottom: 16px;
+  left: 0;
+  z-index: 15;
+  display: flex;
+  justify-content: center;
+  margin-right: 15%;
+  margin-left: 15%;
+  list-style-type: none;
+  .dot {
+    box-sizing: content-box;
+    flex: 0 1 auto;
+    width: 30px;
+    height: 6px;
+    margin-right: 3px;
+    margin-left: 3px;
+    cursor: pointer;
+    background: #fff;
+    background-clip: padding-box;
+    border-top: 10px solid transparent;
+    opacity: 0.3;
+    transition: opacity 3s ease;
+
+    &.active__dot {
+      opacity: 1;
+    }
   }
 }
