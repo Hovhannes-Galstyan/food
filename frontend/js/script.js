@@ -40,57 +40,57 @@ window.addEventListener("DOMContentLoaded", function () {
   // tabs end
 
   // timer start
-  const endTime = "2025-12-31";
+  // const endTime = "2025-12-31";
 
-  function getTimeRemaining(endTime) {
-    const total = Date.parse(endTime) - Date.parse(new Date());
-    let days, hours, minutes, seconds;
+  // function getTimeRemaining(endTime) {
+  //   const total = Date.parse(endTime) - Date.parse(new Date());
+  //   let days, hours, minutes, seconds;
 
-    if (total <= 0) {
-      days = 0;
-      hours = 0;
-      minutes = 0;
-      seconds = 0;
-    } else {
-      days = Math.floor(total / (1000 * 60 * 60 * 24));
-      hours = Math.floor((total / (1000 * 60 * 60)) % 24);
-      minutes = Math.floor((total / 1000 / 60) % 60);
-      seconds = Math.floor((total / 1000) % 60);
-    }
+  //   if (total <= 0) {
+  //     days = 0;
+  //     hours = 0;
+  //     minutes = 0;
+  //     seconds = 0;
+  //   } else {
+  //     days = Math.floor(total / (1000 * 60 * 60 * 24));
+  //     hours = Math.floor((total / (1000 * 60 * 60)) % 24);
+  //     minutes = Math.floor((total / 1000 / 60) % 60);
+  //     seconds = Math.floor((total / 1000) % 60);
+  //   }
 
-    return { total, days, hours, minutes, seconds };
-  }
+  //   return { total, days, hours, minutes, seconds };
+  // }
 
-  function setZero(n) {
-    return n >= 0 && n < 10 ? `0${n}` : n;
-  }
+  // function setZero(n) {
+  //   return n >= 0 && n < 10 ? `0${n}` : n;
+  // }
 
-  function setClock(selector, endTime) {
-    const timer = document.querySelector(selector);
-    const daysElem = timer.querySelector("#days");
-    const hoursElem = timer.querySelector("#hours");
-    const minutesElem = timer.querySelector("#minutes");
-    const secondsElem = timer.querySelector("#seconds");
+  // function setClock(selector, endTime) {
+  //   const timer = document.querySelector(selector);
+  //   const daysElem = timer.querySelector("#days");
+  //   const hoursElem = timer.querySelector("#hours");
+  //   const minutesElem = timer.querySelector("#minutes");
+  //   const secondsElem = timer.querySelector("#seconds");
 
-    const timeInterval = setInterval(updateClock, 950);
+  //   const timeInterval = setInterval(updateClock, 950);
 
-    updateClock();
+  //   updateClock();
 
-    function updateClock() {
-      const { total, days, hours, minutes, seconds } =
-        getTimeRemaining(endTime);
+  //   function updateClock() {
+  //     const { total, days, hours, minutes, seconds } =
+  //       getTimeRemaining(endTime);
 
-      daysElem.textContent = setZero(days);
-      hoursElem.textContent = setZero(hours);
-      minutesElem.textContent = setZero(minutes);
-      secondsElem.textContent = setZero(seconds);
-    }
+  //     daysElem.textContent = setZero(days);
+  //     hoursElem.textContent = setZero(hours);
+  //     minutesElem.textContent = setZero(minutes);
+  //     secondsElem.textContent = setZero(seconds);
+  //   }
 
-    if (total <= 0) clearInterval(timeInterval);
-  }
+  //   if (total <= 0) clearInterval(timeInterval);
+  // }
 
-  setClock(".timer", endTime);
-  // timer end
+  // setClock(".timer", endTime);
+  // // timer end
 
   //Modal start
   const openModalTriggers = document.querySelectorAll("[data-modal-open]");
@@ -309,14 +309,83 @@ window.addEventListener("DOMContentLoaded", function () {
   //forms end
 
   // slider start
+  // const slides = document.querySelectorAll(".offer__slide");
+  // const prevBtn = document.querySelector(".offer__slider-prev");
+  // const nextBtn = document.querySelector(".offer__slider-next");
+  // const current = document.querySelector("#current");
+  // const total = document.querySelector("#total");
 
+  // let slideIndex = 1;
+
+  // function setCurrentAndTotal(block, index) {
+  //   if (slides.length < 10) {
+  //     block.textContent = `0${index}`;
+  //   } else {
+  //     block.textContent = index;
+  //   }
+  // }
+
+  // function showSldes(n) {
+  //   if (n > slides.length) {
+  //     slideIndex = 1;
+  //   }
+
+  //   if (n < 1) {
+  //     slideIndex = slides.length;
+  //   }
+
+  //   slides.forEach((slide) => {
+  //     slide.classList.add("hide");
+  //     slide.classList.remove("show", "fade");
+  //   });
+
+  //   slides[slideIndex - 1].classList.remove("hide");
+  //   slides[slideIndex - 1].classList.add("show", "fade");
+
+  //   setCurrentAndTotal(current, slideIndex);
+  // }
+
+  // function changeSlidesN(n) {
+  //   showSldes((slideIndex += n));
+  // }
+
+  // changeSlidesN(0);
+  // setCurrentAndTotal(total, slides.length);
+  // prevBtn.addEventListener("click", () => changeSlidesN(-1));
+  // nextBtn.addEventListener("click", () => changeSlidesN(1));
+  // slider end
+
+  // slider new version start
   const slides = document.querySelectorAll(".offer__slide");
   const prevBtn = document.querySelector(".offer__slider-prev");
   const nextBtn = document.querySelector(".offer__slider-next");
   const current = document.querySelector("#current");
   const total = document.querySelector("#total");
+  const slidesWrapper = document.querySelector(".offer__slider-wrapper");
+  const slidesInner = document.querySelector(".offer__slider-inner");
+  const wrapperWidth = parseFloat(window.getComputedStyle(slidesWrapper).width);
 
   let slideIndex = 1;
+  let baseOffset = 0;
+
+  function mathCurrentAndTotal(state) {
+    switch (state) {
+      case "next":
+        if (slideIndex == slides.length) {
+          slideIndex = 1;
+        } else {
+          ++slideIndex;
+        }
+        break;
+      case "prev":
+        if (slideIndex == 1) {
+          slideIndex = slides.length;
+        } else {
+          --slideIndex;
+        }
+        break;
+    }
+  }
 
   function setCurrentAndTotal(block, index) {
     if (slides.length < 10) {
@@ -326,33 +395,39 @@ window.addEventListener("DOMContentLoaded", function () {
     }
   }
 
-  function showSldes(n) {
-    if (n > slides.length) {
-      slideIndex = 1;
-    }
-
-    if (n < 1) {
-      slideIndex = slides.length;
-    }
-
-    slides.forEach((slide) => {
-      slide.classList.add("hide");
-      slide.classList.remove("show", "fade");
-    });
-
-    slides[slideIndex - 1].classList.remove("hide");
-    slides[slideIndex - 1].classList.add("show", "fade");
-
-    setCurrentAndTotal(current, slideIndex);
-  }
-
-  function changeSlidesN(n) {
-    showSldes((slideIndex += n));
-  }
-
-  changeSlidesN(0);
+  setCurrentAndTotal(current, slideIndex);
   setCurrentAndTotal(total, slides.length);
-  prevBtn.addEventListener("click", () => changeSlidesN(-1));
-  nextBtn.addEventListener("click", () => changeSlidesN(1));
-  // slider end
+
+  slidesWrapper.style.overflow = "hidden";
+  slidesInner.style.cssText = `
+  width: ${100 * slides.length}%;
+  transition: 0.4s all ease;
+  display: flex;  
+  `;
+  slides.forEach((slide) => (slide.style.width = wrapperWidth));
+
+  nextBtn.addEventListener("click", () => {
+    if (baseOffset == wrapperWidth * (slides.length - 1)) {
+      baseOffset = 0;
+    } else {
+      baseOffset += wrapperWidth;
+    }
+
+    mathCurrentAndTotal("next");
+    setCurrentAndTotal(current, slideIndex);
+
+    slidesInner.style.transform = `translateX(-${baseOffset}px)`;
+  });
+
+  prevBtn.addEventListener("click", () => {
+    if (baseOffset == 0) {
+      baseOffset = wrapperWidth * (slides.length - 1);
+    } else {
+      baseOffset -= wrapperWidth;
+    }
+    mathCurrentAndTotal("prev");
+    setCurrentAndTotal(current, slideIndex);
+    slidesInner.style.transform = `translateX(-${baseOffset}px)`;
+  });
+  // slider new version end
 });
