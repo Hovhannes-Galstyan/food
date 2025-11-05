@@ -473,4 +473,75 @@ window.addEventListener("DOMContentLoaded", function () {
     slidesInner.style.transform = `translateX(-${baseOffset}px)`;
   }
   // slider new version end
+
+  // calorie culculator start
+  const calculatingResult = document.querySelector(".calculating__result span");
+  let gender, height, weight, age, pac;
+
+  function calculatingTotal() {
+    if (!gender || !height || !weight || !age || !pac) {
+      calculatingResult.textContent = "Чего-то не хватает...";
+      return;
+    }
+    switch (gender) {
+      case "female":
+        calculatingResult.textContent = Math.round(
+          (10 * weight + 6.25 * height - 5 * age - 161) * pac
+        );
+
+        break;
+      case "male":
+        calculatingResult.textContent = Math.round(
+          (10 * weight + 6.25 * height - 5 * age + 5) * pac
+        );
+        break;
+    }
+  }
+
+  function getStaticInformation(parentSelector, activeClass) {
+    const elements = document.querySelectorAll(`${parentSelector} div`);
+    document.querySelector(parentSelector).addEventListener("click", (e) => {
+      if (e.target.dataset.pac) {
+        pac = parseFloat(e.target.dataset.pac);
+      }
+      if (e.target.dataset.gender) {
+        gender = e.target.dataset.gender;
+      }
+      elements.forEach((elem) => elem.classList.remove(activeClass));
+      if (e.target.dataset.gender || e.target.dataset.pac) {
+        e.target.classList.add(activeClass);
+      }
+      calculatingTotal();
+    });
+  }
+
+  function getDynamicInformation(selector) {
+    const input = document.querySelector(selector);
+
+    input.addEventListener("input", (e) => {
+      switch (e.target.id) {
+        case "height":
+          height = parseFloat(e.target.value);
+          break;
+        case "weight":
+          weight = parseFloat(e.target.value);
+          break;
+        case "age":
+          age = parseFloat(e.target.value);
+          break;
+      }
+      calculatingTotal();
+    });
+  }
+
+  getStaticInformation("#gender", "calculating__choose-item_active");
+  getStaticInformation(
+    ".calculating__choose_big",
+    "calculating__choose-item_active"
+  );
+  getDynamicInformation("#height");
+  getDynamicInformation("#weight");
+  getDynamicInformation("#age");
+
+  // calorie culculator end
 });
