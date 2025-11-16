@@ -1,4 +1,6 @@
-function forms(openModal, closeModal, modal, modalTimerId) {
+import { openModal, closeModal, modal, modalTimerId } from "./modals.js";
+
+export default function forms() {
   const forms = document.querySelectorAll("form");
   forms.forEach((form) => postData(form));
 
@@ -82,5 +84,3 @@ function forms(openModal, closeModal, modal, modalTimerId) {
     }, 2500);
   }
 }
-
-module.exports = forms;

@@ -1,4 +1,4 @@
-function calculator() {
+export default function calculator() {
   const calculatingResult = document.querySelector(".calculating__result span");
   let gender, height, weight, age, pac;
 
@@ -144,5 +144,3 @@ function calculator() {
     });
   }
 }
-
-module.exports = calculator;

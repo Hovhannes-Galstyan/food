@@ -1,4 +1,4 @@
-function menuCard() {
+export default function menuCard() {
   // MenuCard start
   class MenuCard {
     constructor(coverSrc, coverAlt, title, descr, prise, parentSelector) {
@@ -72,5 +72,3 @@ function menuCard() {
   //     ".menu__field .container"
   //   ).render();
 }
-
-module.exports = menuCard;

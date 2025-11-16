@@ -1,4 +1,4 @@
-function slider() {
+export default function slider() {
   // const slides = document.querySelectorAll(".offer__slide");
   // const prevBtn = document.querySelector(".offer__slider-prev");
   // const nextBtn = document.querySelector(".offer__slider-next");
@@ -163,5 +163,3 @@ function slider() {
     slidesInner.style.transform = `translateX(-${baseOffset}px)`;
   }
 }
-
-module.exports = slider;
